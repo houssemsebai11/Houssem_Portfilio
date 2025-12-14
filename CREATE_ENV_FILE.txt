@@ -1,0 +1,30 @@
+INSTRUCTIONS TO CREATE .env FILE:
+
+1. Open your project folder: C:\Users\houssem sebai\Desktop\iPortfolio-1.0.01
+
+2. Create a new file named: .env
+   (Make sure it starts with a dot and has no extension)
+
+3. Copy and paste this content into the .env file:
+
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_ANON_KEY=your-anon-key-here
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
+SUPABASE_ACCESS_TOKEN=sbp_ddc4d1383be6a6fb0be6c77c88722e2a3609517e
+CHATBOT_API_URL=http://localhost:3000/api
+
+4. Replace the placeholder values:
+   - SUPABASE_URL: Get from Supabase Dashboard > Settings > API > Project URL
+   - SUPABASE_ANON_KEY: Get from Supabase Dashboard > Settings > API > anon public key
+   - SUPABASE_SERVICE_ROLE_KEY: Get from Supabase Dashboard > Settings > API > service_role key
+
+WHERE TO FIND YOUR SUPABASE_URL:
+1. Go to https://supabase.com/dashboard
+2. Select your project
+3. Click Settings (gear icon)
+4. Click API
+5. Find "Project URL" - that's your SUPABASE_URL
+6. Find "Project API keys" section:
+   - "anon public" = SUPABASE_ANON_KEY
+   - "service_role" = SUPABASE_SERVICE_ROLE_KEY
+

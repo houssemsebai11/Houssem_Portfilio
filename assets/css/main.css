@@ -20,9 +20,9 @@
 /* Global Colors - The following color variables are used throughout the website. Updating them here will change the color scheme of the entire website */
 :root { 
   --background-color: #ffffff; /* Background color for the entire website, including individual sections */
-  --default-color: #272829; /* Default color used for the majority of the text content across the entire website */
-  --heading-color: #050d18; /* Color for headings, subheadings and title throughout the website */
-  --accent-color: #149ddd; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
+  --default-color: #000000; /* Default color used for the majority of the text content across the entire website */
+  --heading-color: #000000; /* Color for headings, subheadings and title throughout the website */
+  --accent-color: #9a0b0b; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
   --surface-color: #ffffff; /* The surface color is used as a background of boxed elements within sections, such as cards, icon boxes, or other elements that require a visual separation from the global background. */
   --contrast-color: #ffffff; /* Contrast color for text, ensuring readability against backgrounds of accent, heading, or default colors. */
 }
@@ -45,10 +45,10 @@
 }
 
 .dark-background {
-  --background-color: #040b14;
+  --background-color: #000000;
   --default-color: #ffffff;
   --heading-color: #ffffff;
-  --surface-color: #151f2b;
+  --surface-color: #000000;
   --contrast-color: #ffffff;
 }
 
@@ -635,6 +635,16 @@ section,
 /*--------------------------------------------------------------
 # About Section
 --------------------------------------------------------------*/
+.about .col-lg-4 img {
+  max-width: 80%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 
+              0 8px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
 .about .content h2 {
   font-weight: 700;
   font-size: 24px;
@@ -752,7 +762,7 @@ section,
 
 .resume .resume-item h4 {
   line-height: 18px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   text-transform: uppercase;
   color: color-mix(in srgb, var(--default-color), transparent 20%);
@@ -841,6 +851,9 @@ section,
 
 .portfolio .portfolio-content img {
   transition: 0.3s;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 
+              0 15px 40px rgba(0, 0, 0, 0.2),
+              0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 .portfolio .portfolio-content .portfolio-info {
@@ -902,6 +915,9 @@ section,
 
 .portfolio .portfolio-content:hover img {
   transform: scale(1.1);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3), 
+              0 20px 50px rgba(0, 0, 0, 0.25),
+              0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 .portfolio .portfolio-content .gallery-indicator {
@@ -938,18 +954,21 @@ section,
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  transition: none;
+  transition: all 0.3s ease-in-out;
   border: 1px solid var(--accent-color);
   margin-right: 20px;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(154, 11, 11, 0.2), 
+              0 1px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 .services .service-item .icon img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: none;
-  transition: none;
+  filter: brightness(1) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+  transition: all 0.3s ease-in-out;
   padding: 8px;
 }
 
@@ -957,11 +976,14 @@ section,
   color: var(--contrast-color);
   font-size: 20px;
   line-height: 0;
+  transition: all 0.3s ease-in-out;
 }
 
 .services .service-item:hover .icon {
   background: var(--accent-color);
-  transform: none;
+  transform: scale(1.15);
+  box-shadow: 0 3px 12px rgba(154, 11, 11, 0.3), 
+              0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .services .service-item:hover .icon i {
@@ -969,8 +991,8 @@ section,
 }
 
 .services .service-item:hover .icon img {
-  filter: none;
-  transform: none;
+  filter: brightness(1.1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transform: scale(1.05);
 }
 
 .services .service-item .title {
@@ -1314,11 +1336,4 @@ section,
   font-size: 20px;
   margin-right: 8px;
   color: var(--accent-color);
-}
-
-/*--------------------------------------------------------------
-# Starter Section Section
---------------------------------------------------------------*/
-.starter-section {
-  /* Add your styles here */
 }
