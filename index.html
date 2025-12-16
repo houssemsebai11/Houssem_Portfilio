@@ -811,5 +811,56 @@
   </script>
 
 </body>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.querySelector('.php-email-form');
+  const loading = form.querySelector('.loading');
+  const errorMessage = form.querySelector('.error-message');
+  const sentMessage = form.querySelector('.sent-message');
+
+  // 🔗 YOUR ZAPIER WEBHOOK
+  const webhookUrl = 'https://hooks.zapier.com/hooks/catch/20134506/23ow3ec/';
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    loading.style.display = 'block';
+    errorMessage.style.display = 'none';
+    sentMessage.style.display = 'none';
+
+    const data = {
+      name: document.getElementById('name-field').value,
+      email: document.getElementById('email-field').value,
+      subject: document.getElementById('subject-field').value,
+      message: document.getElementById('message-field').value,
+      date: new Date().toISOString(),
+      source: 'github_pages_contact_form'
+    };
+
+    try {
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      loading.style.display = 'none';
+
+      if (response.ok) {
+        sentMessage.style.display = 'block';
+        form.reset();
+      } else {
+        throw new Error('Failed');
+      }
+    } catch (err) {
+      loading.style.display = 'none';
+      errorMessage.textContent =
+        'Error sending message. Please try again.';
+      errorMessage.style.display = 'block';
+    }
+  });
+});
+</script>
+
 
 </html>
