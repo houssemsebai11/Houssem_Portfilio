@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supabase Connection Checker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 30px;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    .section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    .section h2 {
+      color: #333;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    .status {
+      padding: 12px;
+      border-radius: 6px;
+      margin: 10px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+    }
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .status.warning {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+    .status.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+    .btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+      margin: 5px;
+    }
+    .btn:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    .btn:active {
+      transform: translateY(0);
+    }
+    .config-item {
+      margin: 8px 0;
+      padding: 8px;
+      background: white;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      word-break: break-all;
+    }
+    .config-item strong {
+      color: #667eea;
+      display: inline-block;
+      min-width: 150px;
+    }
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .test-result {
+      margin-top: 15px;
+      padding: 15px;
+      background: white;
+      border-radius: 6px;
+      border: 1px solid #dee2e6;
+    }
+    code {
+      background: #f1f3f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+      color: #e83e8c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Supabase Connection Checker</h1>
+    <p class="subtitle">Verify your Supabase configuration and connection status</p>
+
+    <!-- Current Configuration -->
+    <div class="section">
+      <h2>📋 Current Configuration</h2>
+      <div id="config-status">
+        <div class="loading"></div> Loading configuration...
+      </div>
+    </div>
+
+    <!-- Connection Test -->
+    <div class="section">
+      <h2>🧪 Connection Tests</h2>
+      <button class="btn" onclick="testSupabaseConnection()">Test Supabase Connection</button>
+      <button class="btn" onclick="testTableAccess()">Test Table Access</button>
+      <button class="btn" onclick="testFormSubmission()">Test Form Submission</button>
+      <div id="test-results"></div>
+    </div>
+
+    <!-- Setup Instructions -->
+    <div class="section">
+      <h2>📝 Setup Instructions</h2>
+      <div class="status info">
+        <strong>To connect Supabase:</strong><br><br>
+        1. Go to <a href="https://supabase.com/dashboard" target="_blank">Supabase Dashboard</a><br>
+        2. Select your project → Settings → API<br>
+        3. Copy your <code>Project URL</code> and <code>anon public</code> key<br>
+        4. Update <code>index.html</code> lines 804-805 with your credentials<br>
+        5. Run the SQL setup script: <code>server/supabase-setup.sql</code> in Supabase SQL Editor
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Get configuration from index.html context
+    function getConfig() {
+      return {
+        supabaseUrl: window.SUPABASE_URL || '',
+        supabaseKey: window.SUPABASE_ANON_KEY || '',
+        apiUrl: window.CHATBOT_API_URL || 'http://localhost:3000/api'
+      };
+    }
+
+    function displayConfig() {
+      const config = getConfig();
+      const statusDiv = document.getElementById('config-status');
+      
+      let html = '<div class="config-item"><strong>SUPABASE_URL:</strong> ';
+      if (config.supabaseUrl && config.supabaseUrl !== '' && config.supabaseUrl !== 'your_supabase_url') {
+        html += `<span style="color: green;">${config.supabaseUrl}</span> ✅</div>`;
+      } else {
+        html += '<span style="color: red;">Not configured</span> ❌</div>';
+      }
+
+      html += '<div class="config-item"><strong>SUPABASE_ANON_KEY:</strong> ';
+      if (config.supabaseKey && config.supabaseKey !== '' && config.supabaseKey !== 'your_supabase_anon_key') {
+        html += `<span style="color: green;">${config.supabaseKey.substring(0, 30)}...</span> ✅</div>`;
+      } else {
+        html += '<span style="color: red;">Not configured</span> ❌</div>';
+      }
+
+      html += '<div class="config-item"><strong>CHATBOT_API_URL:</strong> ';
+      html += `<span>${config.apiUrl}</span></div>`;
+
+      // Overall status
+      const isConfigured = config.supabaseUrl && config.supabaseKey && 
+                          config.supabaseUrl !== '' && config.supabaseKey !== '' &&
+                          config.supabaseUrl !== 'your_supabase_url' && 
+                          config.supabaseKey !== 'your_supabase_anon_key';
+
+      if (isConfigured) {
+        html += '<div class="status success" style="margin-top: 15px;">✅ Supabase credentials are configured!</div>';
+      } else {
+        html += '<div class="status error" style="margin-top: 15px;">❌ Supabase credentials are NOT configured. Please update index.html with your Supabase URL and key.</div>';
+      }
+
+      statusDiv.innerHTML = html;
+    }
+
+    async function testSupabaseConnection() {
+      const config = getConfig();
+      const resultsDiv = document.getElementById('test-results');
+      
+      if (!config.supabaseUrl || !config.supabaseKey) {
+        resultsDiv.innerHTML = '<div class="status error">❌ Supabase credentials not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY in index.html</div>';
+        return;
+      }
+
+      resultsDiv.innerHTML = '<div class="status info">🔄 Testing Supabase connection...</div>';
+
+      try {
+        // Test basic connection by querying a simple endpoint
+        const response = await fetch(`${config.supabaseUrl}/rest/v1/`, {
+          method: 'GET',
+          headers: {
+            'apikey': config.supabaseKey,
+            'Authorization': `Bearer ${config.supabaseKey}`
+          }
+        });
+
+        if (response.ok || response.status === 404) {
+          // 404 is okay - it means we connected but endpoint doesn't exist
+          resultsDiv.innerHTML = '<div class="status success">✅ Successfully connected to Supabase!<br>Your credentials are valid and the connection is working.</div>';
+        } else if (response.status === 401) {
+          resultsDiv.innerHTML = '<div class="status error">❌ Authentication failed. Please check your SUPABASE_ANON_KEY - it may be incorrect or expired.</div>';
+        } else {
+          resultsDiv.innerHTML = `<div class="status warning">⚠️ Connection response: ${response.status} ${response.statusText}</div>`;
+        }
+      } catch (error) {
+        resultsDiv.innerHTML = `<div class="status error">❌ Connection failed: ${error.message}<br><br>Possible issues:<br>- Check your SUPABASE_URL is correct<br>- Check your internet connection<br>- Verify Supabase project is active</div>`;
+      }
+    }
+
+    async function testTableAccess() {
+      const config = getConfig();
+      const resultsDiv = document.getElementById('test-results');
+      
+      if (!config.supabaseUrl || !config.supabaseKey) {
+        resultsDiv.innerHTML = '<div class="status error">❌ Supabase credentials not configured</div>';
+        return;
+      }
+
+      resultsDiv.innerHTML = '<div class="status info">🔄 Testing table access...</div>';
+
+      try {
+        const response = await fetch(`${config.supabaseUrl}/rest/v1/contact_submissions?select=id&limit=1`, {
+          method: 'GET',
+          headers: {
+            'apikey': config.supabaseKey,
+            'Authorization': `Bearer ${config.supabaseKey}`,
+            'Prefer': 'return=representation'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          resultsDiv.innerHTML = `<div class="status success">✅ Table access successful!<br>The <code>contact_submissions</code> table exists and is accessible.<br>Found ${data.length} record(s).</div>`;
+        } else if (response.status === 404) {
+          resultsDiv.innerHTML = '<div class="status error">❌ Table not found. Please run the SQL setup script:<br><code>server/supabase-setup.sql</code><br>in your Supabase SQL Editor.</div>';
+        } else if (response.status === 401) {
+          resultsDiv.innerHTML = '<div class="status error">❌ Authentication failed. Check your API key.</div>';
+        } else {
+          const errorText = await response.text();
+          resultsDiv.innerHTML = `<div class="status error">❌ Error: ${response.status} ${response.statusText}<br>${errorText.substring(0, 200)}</div>`;
+        }
+      } catch (error) {
+        resultsDiv.innerHTML = `<div class="status error">❌ Test failed: ${error.message}</div>`;
+      }
+    }
+
+    async function testFormSubmission() {
+      const config = getConfig();
+      const resultsDiv = document.getElementById('test-results');
+      
+      if (!config.supabaseUrl || !config.supabaseKey) {
+        resultsDiv.innerHTML = '<div class="status error">❌ Supabase credentials not configured</div>';
+        return;
+      }
+
+      resultsDiv.innerHTML = '<div class="status info">🔄 Testing form submission...</div>';
+
+      const testData = {
+        name: 'Test User',
+        email: 'test@example.com',
+        subject: 'Connection Test',
+        message: 'This is a test submission to verify Supabase connection.'
+      };
+
+      try {
+        const response = await fetch(`${config.supabaseUrl}/rest/v1/contact_submissions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': config.supabaseKey,
+            'Authorization': `Bearer ${config.supabaseKey}`,
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify(testData)
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          resultsDiv.innerHTML = `<div class="status success">✅ Form submission successful!<br>Test data was saved to Supabase.<br>Record ID: ${data[0]?.id || 'N/A'}<br><br><strong>Note:</strong> You can delete this test record from your Supabase dashboard.</div>`;
+        } else {
+          const errorData = await response.json().catch(() => ({ message: response.statusText }));
+          if (response.status === 401) {
+            resultsDiv.innerHTML = '<div class="status error">❌ Authentication failed. Check your API key and RLS policies.</div>';
+          } else if (response.status === 404) {
+            resultsDiv.innerHTML = '<div class="status error">❌ Table not found. Run the SQL setup script first.</div>';
+          } else {
+            resultsDiv.innerHTML = `<div class="status error">❌ Submission failed: ${response.status}<br>${errorData.message || errorData.error_description || 'Unknown error'}</div>`;
+          }
+        }
+      } catch (error) {
+        resultsDiv.innerHTML = `<div class="status error">❌ Test failed: ${error.message}</div>`;
+      }
+    }
+
+    // Load configuration from parent window or current page
+    window.addEventListener('load', function() {
+      // Try to get config from parent window (if opened from index.html)
+      if (window.parent && window.parent.SUPABASE_URL) {
+        window.SUPABASE_URL = window.parent.SUPABASE_URL;
+        window.SUPABASE_ANON_KEY = window.parent.SUPABASE_ANON_KEY;
+        window.CHATBOT_API_URL = window.parent.CHATBOT_API_URL;
+      }
+      
+      displayConfig();
+    });
+  </script>
+</body>
+</html>
+
