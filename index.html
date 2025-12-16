@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Index - iPortfolio Bootstrap Template</title>
+  <title>Index - portfolio houssem</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -67,7 +67,7 @@
         <li><a href="#portfolio"><i class="bi bi-images navicon"></i> Portfolio</a></li>
         <li><a href="#services"><i class="bi bi-hdd-stack navicon"></i> Services</a></li>
         <li><a href="#contact"><i class="bi bi-envelope navicon"></i> Contact</a></li>
-        <li class="dropdown"><a href="#"><i class="bi bi-chat-dots navicon icon-space"></i> <span>Portfolio Assistant</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
+        <li class="dropdown"><a href="#" id="portfolio-assistant-nav"><i class="bi bi-chat-dots navicon icon-space"></i> <span>Portfolio Assistant</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
             <li><a href="#" id="open-chatbot-nav">Open Chatbot</a></li>
           </ul>
@@ -82,7 +82,11 @@
     <!-- Hero Section -->
     <section id="hero" class="hero section dark-background">
 
-      <img src="assets/img/BACKGROUND SITE NEW.png" alt="Hero background" data-aos="fade-in" class="">
+      <!-- Desktop Hero Image -->
+      <img src="assets/img/BACKGROUND SITE NEW.png" alt="Hero background" data-aos="fade-in" class="d-none d-md-block">
+
+      <!-- Mobile Hero Image -->
+      <img src="assets/img/mobile background site.png" alt="Hero background mobile" data-aos="fade-in" class="d-block d-md-none">
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
         <h2>Hi, I'm Sebai Houssem</h2>
@@ -701,8 +705,17 @@
   <footer id="footer" class="footer position-relative light-background">
 
     <div class="container">
-      <div class="copyright text-center ">
-        <p>© <span id="current-year"></span> <strong class="px-1 sitename">Sebai Houssem</strong> <span>All Rights Reserved</span></p>
+      <div class="row gy-4">
+        <div class="col-lg-12 text-center">
+          <div class="footer-links mb-3">
+            <a href="privacy-policy.html" class="mx-2 mx-md-3">Privacy Policy</a>
+            <span class="separator">|</span>
+            <a href="terms.html" class="mx-2 mx-md-3">Terms of Service</a>
+          </div>
+          <div class="copyright">
+            <p>© <span id="current-year"></span> <strong class="px-1 sitename">Sebai Houssem</strong> <span>All Rights Reserved</span></p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -740,24 +753,32 @@
     // Wait for chatbot to be initialized
     document.addEventListener('DOMContentLoaded', function() {
       const openChatbotLink = document.getElementById('open-chatbot-nav');
-      if (openChatbotLink) {
-        openChatbotLink.addEventListener('click', function(e) {
-          e.preventDefault();
-          // Wait a bit for chatbot to be fully initialized
-          setTimeout(function() {
-            if (window.portfolioChatbot) {
-              if (!window.portfolioChatbot.isOpen) {
-                window.portfolioChatbot.toggleChatbot();
-              }
-            } else {
-              // Fallback: trigger the chatbot toggle button
-              const chatbotToggle = document.getElementById('chatbot-toggle');
-              if (chatbotToggle) {
-                chatbotToggle.click();
-              }
+      const portfolioAssistantTrigger = document.getElementById('portfolio-assistant-nav');
+
+      const openChatbot = function(e) {
+        if (e) e.preventDefault();
+        // Wait a bit for chatbot to be fully initialized
+        setTimeout(function() {
+          if (window.portfolioChatbot) {
+            if (!window.portfolioChatbot.isOpen) {
+              window.portfolioChatbot.toggleChatbot();
             }
-          }, 100);
-        });
+          } else {
+            // Fallback: trigger the chatbot toggle button
+            const chatbotToggle = document.getElementById('chatbot-toggle');
+            if (chatbotToggle) {
+              chatbotToggle.click();
+            }
+          }
+        }, 100);
+      };
+
+      if (openChatbotLink) {
+        openChatbotLink.addEventListener('click', openChatbot);
+      }
+
+      if (portfolioAssistantTrigger) {
+        portfolioAssistantTrigger.addEventListener('click', openChatbot);
       }
     });
   </script>
