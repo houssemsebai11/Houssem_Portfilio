@@ -631,26 +631,34 @@
 
             <div class="info-wrap">
               <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
-                <i class="bi bi-geo-alt flex-shrink-0"></i>
+                <i class="bi bi-person flex-shrink-0"></i>
                 <div>
-                  <h3>Address</h3>
-                  <p>tunis, tunisia les berge du lac1 1053</p>
+                  <h3>Name</h3>
+                  <p>Sebai Houssem</p>
+                </div>
+              </div><!-- End Info Item -->
+
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="250">
+                <i class="bi bi-envelope flex-shrink-0"></i>
+                <div>
+                  <h3>Email</h3>
+                  <p>sebaihoussem11@gmail.com</p>
                 </div>
               </div><!-- End Info Item -->
 
               <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
                 <i class="bi bi-telephone flex-shrink-0"></i>
                 <div>
-                  <h3>Call Us</h3>
+                  <h3>Phone</h3>
                   <p>+216 21 988 631</p>
                 </div>
               </div><!-- End Info Item -->
 
-              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
-                <i class="bi bi-envelope flex-shrink-0"></i>
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="350">
+                <i class="bi bi-geo-alt flex-shrink-0"></i>
                 <div>
-                  <h3>Email Us</h3>
-                  <p>sebaihoussem11@gmail.com</p>
+                  <h3>Location</h3>
+                  <p>Tunis, Tunisia</p>
                 </div>
               </div><!-- End Info Item -->
 
@@ -659,7 +667,7 @@
           </div>
 
           <div class="col-lg-7">
-            <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
+            <form class="php-email-form" data-aos="fade-up" data-aos-delay="200">
               <div class="row gy-4">
 
                 <div class="col-md-6">
@@ -686,7 +694,6 @@
                   <div class="loading">Loading</div>
                   <div class="error-message"></div>
                   <div class="sent-message">Your message has been sent. Thank you!</div>
-
                   <button type="submit">Send Message</button>
                 </div>
 
@@ -791,18 +798,18 @@
     // ============================================
     // CONFIGURATION - Update these values
     // ============================================
-    
+
     // Option 1: Backend API URL (if you have the server running)
     // For local development: 'http://localhost:3000/api'
     // For production: 'https://your-api-domain.com/api'
     // Leave empty or null to use direct Supabase only
-    window.CHATBOT_API_URL = 'http://localhost:3000/api';
-    
-    // Option 2: Direct Supabase Configuration (REQUIRED if API server is not running)
+    window.CHATBOT_API_URL = null; // Set to null to skip API and use direct Supabase
+
+    // Option 2: Direct Supabase Configuration (REQUIRED)
     // Get these from: https://supabase.com/dashboard/project/_/settings/api
-    // Uncomment and fill in your Supabase credentials:
-    window.SUPABASE_URL = ''; // e.g., 'https://xxxxx.supabase.co'
-    window.SUPABASE_ANON_KEY = ''; // e.g., 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+    // Fill in your Supabase credentials below:
+    window.SUPABASE_URL = 'https://ctcloftjkclbhtsmssxt.supabase.co';
+    window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0Y2xvZnRqa2NsYmh0c21zc3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2NTE2NzksImV4cCI6MjA4MTIyNzY3OX0.fAdHzGEoHMF_X7km3DEExu0VJW9h-rytpLSOJhJGnQQ';
     
     // ============================================
     // The form will try to submit via API first,

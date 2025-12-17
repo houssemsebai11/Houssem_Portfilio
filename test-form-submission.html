@@ -5,233 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Form Submission</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-        .test-section {
-            margin: 20px 0;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        button:hover {
-            background: #764ba2;
-        }
-        .result {
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .success {
-            background: #d4edda;
-            color: #155724;
-        }
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-        }
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        form { max-width: 500px; margin: 0 auto; }
+        input, textarea, button { width: 100%; margin: 10px 0; padding: 10px; }
+        .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
-    <h1>Form Submission Test</h1>
-    <p>Use this page to test if your form submission is working correctly.</p>
+    <h1>Test Form Submission</h1>
+    <form id="testForm">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <input type="text" name="subject" placeholder="Subject" required>
+        <textarea name="message" placeholder="Message" rows="5" required></textarea>
+        <button type="submit">Submit Test</button>
+    </form>
 
-    <div class="test-section">
-        <h3>Configuration Check</h3>
-        <div id="config-status"></div>
-        <button onclick="checkConfig()">Check Configuration</button>
-    </div>
+    <div id="result" class="result" style="display: none;"></div>
 
-    <div class="test-section">
-        <h3>Test API Connection</h3>
-        <div id="api-status"></div>
-        <button onclick="testAPI()">Test API Server</button>
-    </div>
+    <!-- Supabase Integration -->
+    <script src="supabase-integration.js"></script>
 
-    <div class="test-section">
-        <h3>Test Direct Supabase</h3>
-        <div id="supabase-status"></div>
-        <button onclick="testSupabase()">Test Direct Supabase</button>
-    </div>
-
-    <div class="test-section">
-        <h3>Test Form Submission</h3>
-        <form id="test-form">
-            <input type="text" name="name" placeholder="Name" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="text" name="subject" placeholder="Subject" required>
-            <textarea name="message" placeholder="Message" required></textarea>
-            <button type="submit">Submit Test Form</button>
-        </form>
-        <div id="form-result"></div>
-    </div>
-
+    <!-- Configure Supabase -->
     <script>
-        // Load configuration from main page
-        const API_URL = window.CHATBOT_API_URL || 'http://localhost:3000/api';
-        const SUPABASE_URL = window.SUPABASE_URL || '';
-        const SUPABASE_KEY = window.SUPABASE_ANON_KEY || '';
+        window.CHATBOT_API_URL = null;
+        window.SUPABASE_URL = 'https://ctcloftjkclbhtsmssxt.supabase.co';
+        window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0Y2xvZnRqa2NsYmh0c21zc3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2NTE2NzksImV4cCI6MjA4MTIyNzY3OX0.fAdHzGEoHMF_X7km3DEExu0VJW9h-rytpLSOJhJGnQQ';
 
-        function checkConfig() {
-            const status = document.getElementById('config-status');
-            let html = '<strong>Current Configuration:</strong><br>';
-            html += `API URL: ${API_URL || 'Not set'}<br>`;
-            html += `Supabase URL: ${SUPABASE_URL || 'Not set'}<br>`;
-            html += `Supabase Key: ${SUPABASE_KEY ? 'Set (' + SUPABASE_KEY.substring(0, 20) + '...)' : 'Not set'}<br>`;
-            
-            if (!API_URL && !SUPABASE_URL) {
-                html += '<div class="error">⚠️ Neither API nor Supabase is configured!</div>';
-            } else if (API_URL && SUPABASE_URL) {
-                html += '<div class="success">✅ Both API and Supabase are configured (will try API first)</div>';
-            } else if (API_URL) {
-                html += '<div class="success">✅ API is configured</div>';
-            } else {
-                html += '<div class="success">✅ Supabase is configured (direct mode)</div>';
-            }
-            
-            status.innerHTML = html;
-        }
-
-        async function testAPI() {
-            const status = document.getElementById('api-status');
-            status.innerHTML = 'Testing...';
-            
-            if (!API_URL) {
-                status.innerHTML = '<div class="error">API URL not configured</div>';
-                return;
-            }
+        document.getElementById('testForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
 
             try {
-                const response = await fetch(`${API_URL}/health`);
-                if (response.ok) {
-                    const data = await response.json();
-                    status.innerHTML = `<div class="success">✅ API Server is running!<br>Supabase: ${data.supabase}<br>OpenAI: ${data.openai}<br>Twilio: ${data.twilio}</div>`;
-                } else {
-                    status.innerHTML = `<div class="error">❌ API Server responded with error: ${response.status}</div>`;
-                }
-            } catch (error) {
-                status.innerHTML = `<div class="error">❌ Cannot connect to API Server<br>Error: ${error.message}<br><br>Make sure the server is running: cd server && npm start</div>`;
-            }
-        }
-
-        async function testSupabase() {
-            const status = document.getElementById('supabase-status');
-            status.innerHTML = 'Testing...';
-            
-            if (!SUPABASE_URL || !SUPABASE_KEY) {
-                status.innerHTML = '<div class="error">Supabase credentials not configured</div>';
-                return;
-            }
-
-            try {
-                // Test by trying to query the table (should return empty array or data)
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/contact_submissions?select=id&limit=1`, {
-                    method: 'GET',
+                const formData = new FormData(this);
+                // Test direct Supabase connection
+                const response = await fetch(`${window.SUPABASE_URL}/rest/v1/contact_submissions`, {
+                    method: 'POST',
                     headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`
-                    }
+                        'Content-Type': 'application/json',
+                        'apikey': window.SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify({
+                        name: formData.get('name'),
+                        email: formData.get('email'),
+                        subject: formData.get('subject'),
+                        message: formData.get('message')
+                    })
                 });
 
                 if (response.ok) {
-                    status.innerHTML = '<div class="success">✅ Supabase connection successful!<br>Table exists and is accessible.</div>';
+                    const data = await response.json();
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Success! Form submitted to Supabase. Record ID: ${data[0]?.id || 'N/A'}`;
                 } else {
-                    const error = await response.text();
-                    status.innerHTML = `<div class="error">❌ Supabase error: ${response.status}<br>${error}</div>`;
+                    const error = await response.json();
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Error: ${response.status} - ${error.message || 'Unknown error'}`;
                 }
             } catch (error) {
-                status.innerHTML = `<div class="error">❌ Cannot connect to Supabase<br>Error: ${error.message}</div>`;
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Connection Error: ${error.message}`;
             }
-        }
-
-        document.getElementById('test-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const result = document.getElementById('form-result');
-            result.innerHTML = 'Submitting...';
-            
-            const formData = new FormData(e.target);
-            const data = {
-                name: formData.get('name'),
-                email: formData.get('email'),
-                subject: formData.get('subject'),
-                message: formData.get('message')
-            };
-
-            // Try API first
-            if (API_URL) {
-                try {
-                    const response = await fetch(`${API_URL}/submit-form`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(data)
-                    });
-
-                    if (response.ok) {
-                        const res = await response.json();
-                        result.innerHTML = `<div class="success">✅ Form submitted via API!<br>ID: ${res.id || 'N/A'}</div>`;
-                        e.target.reset();
-                        return;
-                    }
-                } catch (error) {
-                    console.log('API failed, trying Supabase...', error);
-                }
-            }
-
-            // Try direct Supabase
-            if (SUPABASE_URL && SUPABASE_KEY) {
-                try {
-                    const response = await fetch(`${SUPABASE_URL}/rest/v1/contact_submissions`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'apikey': SUPABASE_KEY,
-                            'Authorization': `Bearer ${SUPABASE_KEY}`,
-                            'Prefer': 'return=representation'
-                        },
-                        body: JSON.stringify(data)
-                    });
-
-                    if (response.ok) {
-                        const res = await response.json();
-                        result.innerHTML = `<div class="success">✅ Form submitted directly to Supabase!<br>ID: ${res[0]?.id || 'N/A'}</div>`;
-                        e.target.reset();
-                        return;
-                    } else {
-                        const error = await response.json();
-                        result.innerHTML = `<div class="error">❌ Supabase error: ${error.message || JSON.stringify(error)}</div>`;
-                    }
-                } catch (error) {
-                    result.innerHTML = `<div class="error">❌ Failed to submit: ${error.message}</div>`;
-                }
-            } else {
-                result.innerHTML = '<div class="error">❌ Neither API nor Supabase is configured!</div>';
-            }
-        });
-
-        // Auto-check on load
-        window.addEventListener('load', () => {
-            checkConfig();
         });
     </script>
 </body>
 </html>
-

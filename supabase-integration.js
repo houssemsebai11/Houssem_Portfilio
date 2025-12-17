@@ -65,8 +65,13 @@ async function submitFormToSupabase(formData) {
  * Submit form via backend API (recommended)
  */
 async function submitFormViaAPI(formData) {
+  // Skip API if explicitly set to null
+  if (window.CHATBOT_API_URL === null) {
+    throw new Error('API disabled - using direct Supabase only');
+  }
+
   const apiUrl = window.CHATBOT_API_URL || 'http://localhost:3000/api';
-  
+
   const data = {
     name: formData.get('name'),
     email: formData.get('email'),
@@ -222,13 +227,49 @@ async function submitFormDirectToSupabase(formData) {
       
       // Method 1: Intercept form submission
       form.addEventListener('submit', async function(event) {
+        event.preventDefault(); // Prevent default form submission
+        event.stopPropagation(); // Stop event bubbling
+
         const formData = new FormData(this);
-        
-        // Submit to Supabase in parallel (non-blocking)
-        // Don't await - let it run in background
-        submitToSupabase(formData).catch(err => {
-          // Already logged in submitToSupabase
-        });
+
+        // Show loading state
+        const submitButton = form.querySelector('button[type="submit"]');
+        const loadingDiv = form.querySelector('.loading');
+        const errorDiv = form.querySelector('.error-message');
+        const sentDiv = form.querySelector('.sent-message');
+
+        if (submitButton) submitButton.disabled = true;
+        if (loadingDiv) loadingDiv.style.display = 'block';
+        if (errorDiv) errorDiv.style.display = 'none';
+        if (sentDiv) sentDiv.style.display = 'none';
+
+        try {
+          // Submit to Supabase
+          await submitToSupabase(formData);
+
+          // Show success message
+          if (loadingDiv) loadingDiv.style.display = 'none';
+          if (sentDiv) {
+            sentDiv.style.display = 'block';
+            sentDiv.classList.add('d-block');
+          }
+
+          // Reset form after successful submission
+          form.reset();
+
+        } catch (error) {
+          // Show error message
+          if (loadingDiv) loadingDiv.style.display = 'none';
+          if (errorDiv) {
+            errorDiv.style.display = 'block';
+            errorDiv.textContent = 'Failed to send message. Please try again.';
+            errorDiv.classList.add('d-block');
+          }
+          console.error('Form submission error:', error);
+        } finally {
+          // Re-enable submit button
+          if (submitButton) submitButton.disabled = false;
+        }
       }, true); // Use capture phase to run before existing handler
       
       // Method 2: Also listen for successful PHP submission as backup
@@ -255,4 +296,3 @@ async function submitFormDirectToSupabase(formData) {
     });
   }
 })();
-
