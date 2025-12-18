@@ -1,13 +1,12 @@
 /**
  * Backend API Server for Portfolio Chatbot
- * Handles chatbot requests, form submissions, and WhatsApp integration
+ * Handles chatbot requests and form submissions
  */
 
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
-const twilio = require('twilio');
 const axios = require('axios');
 const OpenAI = require('openai');
 
@@ -35,10 +34,7 @@ const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 }) : null;
 
-// Twilio Configuration (for WhatsApp)
-const twilioClient = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN 
-  ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
-  : null;
+
 
 // Website Knowledge Base
 const knowledgeBase = {
@@ -212,7 +208,7 @@ app.post('/api/chat', async (req, res) => {
 });
 
 /**
- * Form submission endpoint (Supabase + WhatsApp Notification)
+ * Form submission endpoint
  */
 app.post('/api/submit-form', async (req, res) => {
   try {
@@ -249,16 +245,7 @@ app.post('/api/submit-form', async (req, res) => {
       console.warn('⚠️ Supabase not configured - form not saved to database');
     }
 
-    // Send WhatsApp notification if configured
-    if (twilioClient && process.env.WHATSAPP_TO_NUMBER) {
-      try {
-        await sendWhatsAppNotification(name, email, subject, message);
-        console.log('✅ WhatsApp notification sent');
-      } catch (whatsappError) {
-        console.error('⚠️ WhatsApp notification failed:', whatsappError.message);
-        // Don't fail the request if WhatsApp fails
-      }
-    }
+
 
     return res.json({ 
       success: true, 
@@ -271,104 +258,20 @@ app.post('/api/submit-form', async (req, res) => {
   }
 });
 
-/**
- * Send WhatsApp notification for new form submission
- */
-async function sendWhatsAppNotification(name, email, subject, message) {
-  if (!twilioClient || !process.env.WHATSAPP_TO_NUMBER) {
-    throw new Error('WhatsApp not configured');
-  }
 
-  const whatsappMessage = `📧 *New Contact Form Submission*
 
-👤 *Name:* ${name}
-📧 *Email:* ${email}
-📌 *Subject:* ${subject}
 
-💬 *Message:*
-${message}
 
----
-Portfolio Website Contact Form`;
 
-  try {
-    const message = await twilioClient.messages.create({
-      from: process.env.TWILIO_WHATSAPP_NUMBER || 'whatsapp:+14155238886',
-      to: process.env.WHATSAPP_TO_NUMBER, // Your WhatsApp number
-      body: whatsappMessage
-    });
-
-    console.log('WhatsApp message sent:', message.sid);
-    return message;
-  } catch (error) {
-    console.error('Twilio WhatsApp error:', error);
-    throw error;
-  }
-}
-
-/**
- * WhatsApp webhook endpoint (Twilio)
- */
-app.post('/api/whatsapp', async (req, res) => {
-  try {
-    if (!twilioClient) {
-      return res.status(503).send('WhatsApp integration not configured');
-    }
-
-    const incomingMessage = req.body.Body;
-    const from = req.body.From;
-
-    console.log(`WhatsApp message from ${from}: ${incomingMessage}`);
-
-    // Get chatbot response
-    const response = await getEnhancedResponse(incomingMessage, knowledgeBase);
-
-    // Send response via Twilio
-    const twiml = new twilio.twiml.MessagingResponse();
-    twiml.message(response);
-
-    res.type('text/xml');
-    res.send(twiml.toString());
-  } catch (error) {
-    console.error('WhatsApp webhook error:', error);
-    res.status(500).send('Error processing WhatsApp message');
-  }
-});
-
-/**
- * WhatsApp notification endpoint (standalone)
- */
-app.post('/api/notify-whatsapp', async (req, res) => {
-  try {
-    const { name, email, subject, message } = req.body;
-
-    if (!name || !email || !subject || !message) {
-      return res.status(400).json({ error: 'All fields are required' });
-    }
-
-    if (!twilioClient || !process.env.WHATSAPP_TO_NUMBER) {
-      return res.status(503).json({ error: 'WhatsApp not configured' });
-    }
-
-    await sendWhatsAppNotification(name, email, subject, message);
-    
-    res.json({ success: true, message: 'WhatsApp notification sent' });
-  } catch (error) {
-    console.error('WhatsApp notification error:', error);
-    res.status(500).json({ error: 'Failed to send notification: ' + error.message });
-  }
-});
 
 /**
  * Health check endpoint
  */
 app.get('/api/health', (req, res) => {
-  res.json({ 
+  res.json({
     status: 'ok',
     supabase: supabase ? 'configured' : 'not configured',
-    openai: openai ? 'configured' : 'not configured',
-    twilio: twilioClient ? 'configured' : 'not configured',
-    whatsapp_notifications: (twilioClient && process.env.WHATSAPP_TO_NUMBER) ? 'configured' : 'not configured'
+    openai: openai ? 'configured' : 'not configured'
   });
 });
 
@@ -386,17 +289,6 @@ app.listen(PORT, () => {
   } else {
     console.log('⚠️  OpenAI not configured (optional, set OPENAI_API_KEY)');
   }
-  if (twilioClient) {
-    console.log('✅ Twilio configured');
-    if (process.env.WHATSAPP_TO_NUMBER) {
-      console.log(`✅ WhatsApp notifications enabled for: ${process.env.WHATSAPP_TO_NUMBER}`);
-    } else {
-      console.log('⚠️  WhatsApp notifications not configured (set WHATSAPP_TO_NUMBER in .env)');
-    }
-  } else {
-    console.log('⚠️  Twilio not configured (optional, set TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN)');
-  }
 });
 
 module.exports = app;
-

@@ -172,7 +172,7 @@ async function submitFormDirectToSupabase(formData) {
         submissionInProgress = true;
         
         try {
-          // Try API first (includes WhatsApp notification)
+          // Try API first
           try {
             const result = await submitFormViaAPI(formData);
             submissionCompleted = true;
@@ -186,25 +186,7 @@ async function submitFormDirectToSupabase(formData) {
               submissionCompleted = true;
               console.log('✅ Form submitted successfully via direct Supabase');
               
-              // Try to send WhatsApp notification via API even if form was saved directly
-              // This is a best-effort attempt
-              try {
-                const apiUrl = window.CHATBOT_API_URL || 'http://localhost:3000/api';
-                const data = {
-                  name: formData.get('name'),
-                  email: formData.get('email'),
-                  subject: formData.get('subject'),
-                  message: formData.get('message')
-                };
-                // Send notification request (don't await - fire and forget)
-                fetch(`${apiUrl}/notify-whatsapp`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(data)
-                }).catch(() => {}); // Silent fail for notification
-              } catch (notifyError) {
-                // Notification failed, but form was saved - that's okay
-              }
+
               
               return result;
             } catch (supabaseError) {

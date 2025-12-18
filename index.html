@@ -9,8 +9,8 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <!-- <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon"> -->
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -80,17 +80,45 @@
   <main class="main">
 
     <!-- Hero Section -->
-    <section id="hero" class="hero section dark-background">
+    <section id="hero" class="hero section dark-background" role="banner" aria-labelledby="hero-heading">
 
       <!-- Desktop Hero Image -->
-      <img src="assets/img/BACKGROUND SITE NEW.png" alt="Hero background" data-aos="fade-in" class="d-none d-md-block">
+      <img src="assets/img/BACKGROUND SITE NEW.png"
+           alt="Creative background showcasing design and multimedia work"
+           data-aos="fade-in"
+           class="d-none d-md-block hero-bg-desktop"
+           loading="eager">
 
       <!-- Mobile Hero Image -->
-      <img src="assets/img/mobile background site.png" alt="Hero background mobile" data-aos="fade-in" class="d-block d-md-none">
+      <img src="assets/img/mobile background site.png"
+           alt="Mobile optimized creative background"
+           data-aos="fade-in"
+           class="d-block d-md-none hero-bg-mobile"
+           loading="eager">
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <h1 id="hero-heading" class="sr-only">Sebai Houssem - Multimedia Designer & Creative Professional</h1>
         <h2>Hi, I'm Sebai Houssem</h2>
-        <p>I'm a <span class="typed" data-typed-items="Designer, Videographer, Freelancer, Photographer">Designer</span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span></p>
+        <p>I'm a <span class="typed" data-typed-items="Designer, Videographer, Freelancer, Photographer" aria-label="Professional roles">Designer</span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span></p>
+
+        <!-- Social Links moved to hero section for better mobile UX -->
+        <div class="social-links text-center">
+          <a href="https://www.facebook.com/houssem.sebai.835478" target="_blank" rel="noopener noreferrer" class="facebook" aria-label="Visit Facebook profile">
+            <i class="bi bi-facebook" aria-hidden="true"></i>
+          </a>
+          <a href="https://www.instagram.com/houssem.sebai?igsh=aTA5MThwZzNyZ2sw" target="_blank" rel="noopener noreferrer" class="instagram" aria-label="Visit Instagram profile">
+            <i class="bi bi-instagram" aria-hidden="true"></i>
+          </a>
+          <a href="https://www.behance.net/sebaihoussem" target="_blank" rel="noopener noreferrer" class="behance" aria-label="Visit Behance portfolio">
+            <i class="bi bi-behance" aria-hidden="true"></i>
+          </a>
+          <a href="https://www.pinterest.com/sebaihoussem/" target="_blank" rel="noopener noreferrer" class="pinterest" aria-label="Visit Pinterest profile">
+            <i class="bi bi-pinterest" aria-hidden="true"></i>
+          </a>
+          <a href="https://www.linkedin.com/profile-thirdparty-redirect/AgFDdfGgtopgXwAAAZrwnQEyW5bG_-6_4L0x8Em-VHj8nfAlz-1_F0FItEOZeuBptAJ6S5Kap6GFjh-lg2x2cAeGpFlhf0qGj_nhcgWStiUCNZxnbkwq9G1T6uf0HFk" target="_blank" rel="noopener noreferrer" class="linkedin" aria-label="Visit LinkedIn profile">
+            <i class="bi bi-linkedin" aria-hidden="true"></i>
+          </a>
+        </div>
       </div>
 
     </section><!-- /Hero Section -->
@@ -561,7 +589,7 @@
           <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="100">
             <div class="icon flex-shrink-0"><img src="assets/img/icon site/Brand Identity icon.png" alt="Brand Identity" style="width: 100%; height: 100%; object-fit: contain;"></div>
             <div>
-              <h4 class="title">Brand Identity & Logo Design</a></h4>
+              <h4 class="title">Brand Identity & Logo Design</h4>
               <p class="description">I personally develop complete brand identities and logos that align with your vision and enhance your market presence.</p>
             </div>
           </div>
@@ -570,7 +598,7 @@
           <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="200">
             <div class="icon flex-shrink-0"><img src="assets/img/icon site/Graphic Design for Marketing Collateral.png" alt="Graphic Design for Marketing Collateral" style="width: 100%; height: 100%; object-fit: contain;"></div>
             <div>
-              <h4 class="title">Graphic Design for Marketing Collateral</a></h4>
+              <h4 class="title">Graphic Design for Marketing Collateral</h4>
               <p class="description">I create compelling and professional visual assets for all your marketing needs, including social media, print, and billboards.</p>
             </div>
           </div><!-- End Service Item -->
@@ -578,7 +606,7 @@
           <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="300">
             <div class="icon flex-shrink-0"><img src="assets/img/icon site/Complete Videography & Editing.png" alt="Complete Videography & Editing" style="width: 100%; height: 100%; object-fit: contain;"></div>
             <div>
-              <h4 class="title">Complete Videography & Editing</a></h4>
+              <h4 class="title">Complete Videography & Editing</h4>
               <p class="description">I handle the entire video workflow, from initial scriptwriting and storyboarding to shooting, editing, storytelling, and professional color grading (Log/RAW workflows).</p>
             </div>
           </div><!-- End Service Item -->
@@ -586,7 +614,7 @@
           <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="400">
             <div class="icon flex-shrink-0"><img src="assets/img/icon site/Photography & Image Retouching.png" alt="Photography & Image Retouching" style="width: 100%; height: 100%; object-fit: contain;"></div>
             <div>
-              <h4 class="title">Photography & Image Retouching</a></h4>
+              <h4 class="title">Photography & Image Retouching</h4>
               <p class="description">I offer high-quality professional photography services and use expert image retouching and photo editing to ensure a polished final product.</p>
             </div>
           </div><!-- End Service Item -->
@@ -594,7 +622,7 @@
           <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="500">
             <div class="icon flex-shrink-0"><img src="assets/img/icon site/Motion Graphics & Animation.png" alt="Motion Graphics & Animation" style="width: 100%; height: 100%; object-fit: contain;"></div>
             <div>
-              <h4 class="title">Motion Graphics & Animation</a></h4>
+              <h4 class="title">Motion Graphics & Animation</h4>
               <p class="description">I produce dynamic animated graphics and title sequences to make your videos and digital content more engaging and impactful.</p>
             </div>
           </div><!-- End Service Item -->
@@ -602,7 +630,7 @@
           <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="600">
             <div class="icon flex-shrink-0"><img src="assets/img/icon site/Print File Preparation & Quality Control.png" alt="Print File Preparation & Quality Control" style="width: 100%; height: 100%; object-fit: contain;"></div>
             <div>
-              <h4 class="title">Print File Preparation & Quality Control</a></h4>
+              <h4 class="title">Print File Preparation & Quality Control</h4>
               <p class="description">I ensure your design files are correctly prepared for professional printing, including quality control and print monitoring.</p>
             </div>
           </div><!-- End Service Item -->
@@ -803,7 +831,7 @@
     // For local development: 'http://localhost:3000/api'
     // For production: 'https://your-api-domain.com/api'
     // Leave empty or null to use direct Supabase only
-    window.CHATBOT_API_URL = null; // Set to null to skip API and use direct Supabase
+    window.CHATBOT_API_URL = 'http://localhost:3000/api'; // Use the running server for proper database saving
 
     // Option 2: Direct Supabase Configuration (REQUIRED)
     // Get these from: https://supabase.com/dashboard/project/_/settings/api
