@@ -68,8 +68,13 @@
    */
   const preloader = document.querySelector('#preloader');
   if (preloader) {
+    let preloaderTimeoutId = null;
+
     const hidePreloader = () => {
       if (!preloader || preloader.classList.contains('fade-out')) return;
+      if (preloaderTimeoutId) {
+        clearTimeout(preloaderTimeoutId);
+      }
       // Add fade-out class for smooth exit
       preloader.classList.add('fade-out');
       // Remove preloader after animation completes
@@ -91,6 +96,9 @@
     window.addEventListener('load', hidePreloader, {
       once: true
     });
+
+    // Hard stop so users never get stuck behind preloader.
+    preloaderTimeoutId = setTimeout(hidePreloader, 2500);
   }
 
   /**
