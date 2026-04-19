@@ -479,7 +479,7 @@ h6 {
   align-items: center;
   justify-content: center;
   will-change: transform;
-  animation: preloader-spin 2s ease-in-out infinite;
+  animation: preloader-spin 3s ease-in-out infinite;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color), transparent 65%),
               0 10px 30px color-mix(in srgb, var(--accent-color), transparent 75%);
 }
