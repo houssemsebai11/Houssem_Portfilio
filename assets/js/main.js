@@ -68,13 +68,28 @@
    */
   const preloader = document.querySelector('#preloader');
   if (preloader) {
-    window.addEventListener('load', () => {
+    const hidePreloader = () => {
+      if (!preloader || preloader.classList.contains('fade-out')) return;
       // Add fade-out class for smooth exit
       preloader.classList.add('fade-out');
       // Remove preloader after animation completes
       setTimeout(() => {
         preloader.remove();
       }, 600);
+    };
+
+    // Hide early for faster first paint.
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', hidePreloader, {
+        once: true
+      });
+    } else {
+      hidePreloader();
+    }
+
+    // Safety fallback in case DOMContentLoaded is delayed.
+    window.addEventListener('load', hidePreloader, {
+      once: true
     });
   }
 
