@@ -1296,6 +1296,13 @@ section,
   font-size: 24px;
 }
 
+.about .about-details-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
 .about .content ul {
   list-style: none;
   padding: 0;
