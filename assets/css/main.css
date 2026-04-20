@@ -1324,8 +1324,7 @@ section,
   min-height: 420px;
   object-fit: cover;
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15),
-              0 8px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
 }
 
 @media (max-width: 991.98px) {
