@@ -1336,7 +1336,7 @@ section,
   filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.28));
   margin: 0 !important;
   display: block;
-  transform: translateY(-12px);
+  transform: translateY(-80px);
 }
 
 @media (max-width: 991.98px) {
