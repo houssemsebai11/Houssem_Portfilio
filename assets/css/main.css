@@ -1325,6 +1325,7 @@ section,
   object-fit: cover;
   border-radius: 8px;
   box-shadow: none !important;
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.28));
 }
 
 @media (max-width: 991.98px) {
